@@ -40,6 +40,20 @@ public class HelloWorldService {
 		return save(request);
 	}
 
+	public Optional<Greeting> updateGreeting(String id, Greeting updateGreeting) {
+
+		if(this.greetings.get(id) == null)
+			return Optional.empty();
+
+		Greeting greeting = this.greetings.computeIfPresent(id, (key, val) -> {
+			val.setMessage(updateGreeting.getMessage());
+			return val;
+		});
+
+		Greeting updated = save(greeting);
+		return Optional.of(updated);
+	}
+
 	public Optional<Greeting> getGreeting(String id) {
 		Greeting greeting = greetings.get(id);
 		if (greeting == null) {
