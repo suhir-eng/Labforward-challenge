@@ -17,8 +17,7 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -78,6 +77,17 @@ public class HelloControllerTest extends MVCIntegrationTest {
 		       .andExpect(jsonPath("$.message", is(hello.getMessage())));
 	}
 
+	//test added for patch(/hello/id)
+	@Test
+	public void returnBadRequestWhenIdIsInvalid() throws Exception {
+		Greeting hello = new Greeting(HELLO_LUKE);
+		final String body = getGreetingBody(hello);
+
+		mockMvc.perform(patch("/hello/id").contentType(MediaType.APPLICATION_JSON).content(body))
+				.andExpect(status().isNotFound());
+	}
+
+
 	private String getGreetingBody(Greeting greeting) throws JSONException {
 		JSONObject json = new JSONObject().put("message", greeting.getMessage());
 
@@ -87,5 +97,7 @@ public class HelloControllerTest extends MVCIntegrationTest {
 
 		return json.toString();
 	}
+
+
 
 }
